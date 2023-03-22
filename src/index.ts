@@ -1,2 +1,3 @@
-export { MyFoo, MyFooAttributes, MyFooCountEvent } from './lib/my-foo';
+export { MyFoo, MyFooAttributes, MyFooCountEvent, MyFooCustomMethods, Observable } from './lib/my-foo';
+
 
