@@ -48,7 +48,7 @@ export class MyFoo extends HTMLElement implements MyFooCustomMethods {
      * 
      * @param params 
      */
-    constructor(params: unknown[]) {
+    constructor(...params: unknown[]) {
         super();
         const [bar, setBar] = createSignal<string>('');
         const [ugg, setUgg] = createSignal<boolean>(false);
