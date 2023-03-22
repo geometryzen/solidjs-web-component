@@ -44,7 +44,11 @@ export class MyFoo extends HTMLElement implements MyFooCustomMethods {
     #countId: number | undefined;
     #count = new BehaviorSubject(0);
     count$ = this.#count.asObservable();
-    constructor() {
+    /**
+     * 
+     * @param params 
+     */
+    constructor(params: unknown[]) {
         super();
         const [bar, setBar] = createSignal<string>('');
         const [ugg, setUgg] = createSignal<boolean>(false);
@@ -55,6 +59,8 @@ export class MyFoo extends HTMLElement implements MyFooCustomMethods {
         const [debug, setDebug] = createSignal<boolean>(false);
         this.#debug = debug;
         this.#setDebug = setDebug;
+        // eslint-disable-next-line no-console
+        console.log("params", JSON.stringify(params));
     }
 
     connectedCallback() {
