@@ -1,6 +1,6 @@
 {
     "name": "@geometryzen/solidjs-web-component",
-    "version": "0.9.15",
+    "version": "0.9.16",
     "description": "SolidJS Web Component",
     "module": "./dist/esm/index.js",
     "types": "./dist/types/index.d.ts",
