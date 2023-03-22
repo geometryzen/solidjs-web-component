@@ -8,10 +8,9 @@ export { Observable } from "rxjs";
  * This is used when the web component is used in JSX.
  */
 export interface MyFooAttributes {
-    "bar": string
-    "debug"?: boolean
-    "ugg"?: boolean
-    //    "onCount"?: any
+    "bar": string;
+    "debug"?: boolean;
+    "ugg"?: boolean;
 }
 
 /**
@@ -20,15 +19,13 @@ export interface MyFooAttributes {
  */
 export interface MyFooCustomMethods {
     count$: Observable<number>;
-    customMethod(): void
+    customMethod(): void;
 }
 
 /**
  * The synthetic 'count' event.
  */
-export interface MyFooCountEvent {
-    detail: number
-}
+export type MyFooCountEvent = CustomEvent<number>;
 
 /**
  * The MyFoo custom HTML element.
@@ -119,7 +116,7 @@ export class MyFoo extends HTMLElement implements MyFooCustomMethods {
         }
     }
 
-    attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
         if (this.#debug()) {
             // eslint-disable-next-line no-console
             console.log(`MyFoo.attributeChanged ${JSON.stringify(name)} changed ${JSON.stringify(oldValue)}=>${JSON.stringify(newValue)}.`);
@@ -130,11 +127,11 @@ export class MyFoo extends HTMLElement implements MyFooCustomMethods {
                 break;
             }
             case "debug": {
-                this.#setDebug(true);
+                this.#setDebug(booleanValue(newValue));
                 break;
             }
             case "ugg": {
-                this.#setUgg(true);
+                this.#setUgg(booleanValue(newValue));
                 break;
             }
             default: {
@@ -147,5 +144,38 @@ export class MyFoo extends HTMLElement implements MyFooCustomMethods {
     customMethod(): void {
         // eslint-disable-next-line no-console
         console.log('MyFoo.customMethod called');
+    }
+}
+
+/**
+ * For use with HTML boolean attributes.
+ * @param value 
+ */
+function booleanValue(value: string | null): boolean {
+    if (typeof value === 'string') {
+        return true;
+    }
+    else if (value === null) {
+        return false;
+    }
+    else {
+        throw new Error();
+    }
+}
+
+export function defineCustomElementMyFoo(name: string, options?: ElementDefinitionOptions): void {
+    window.customElements.define(name, MyFoo, options);
+}
+
+export function isMyFoo(x: unknown): x is HTMLElement & MyFooCustomMethods {
+    return x instanceof MyFoo;
+}
+
+export function assertMyFoo(element: HTMLElement | null): HTMLElement & MyFooCustomMethods {
+    if (isMyFoo(element)) {
+        return element;
+    }
+    else {
+        throw new Error();
     }
 }
