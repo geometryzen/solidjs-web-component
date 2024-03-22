@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable } from "rxjs";
-import { Accessor, createEffect, createSignal, JSX, Setter } from "solid-js";
+import { Accessor, JSX, Setter, createEffect, createSignal } from "solid-js";
 import { render } from "solid-js/web";
 export { Observable } from "rxjs";
 
