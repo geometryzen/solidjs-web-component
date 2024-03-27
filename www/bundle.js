@@ -1803,7 +1803,7 @@ new EventSource('/esbuild').addEventListener('change', () => location.reload());
     return BehaviorSubject2;
   }(Subject);
 
-  // src/lib/my-foo.tsx
+  // src/lib/my-foo/MyFoo.tsx
   var _tmpl$ = /* @__PURE__ */ template(`<h1>MyFoo`);
   var _tmpl$2 = /* @__PURE__ */ template(`<p>bar: `);
   var _tmpl$3 = /* @__PURE__ */ template(`<p>ugg: `);
@@ -1831,6 +1831,9 @@ new EventSource('/esbuild').addEventListener('change', () => location.reload());
      */
     constructor(...params) {
       super();
+      this.attachShadow({
+        mode: "open"
+      });
       const [bar, setBar] = createSignal("");
       const [ugg, setUgg] = createSignal(false);
       this.#bar = bar;
@@ -1841,11 +1844,6 @@ new EventSource('/esbuild').addEventListener('change', () => location.reload());
       this.#debug = debug;
       this.#setDebug = setDebug;
       console.log("params", JSON.stringify(params));
-    }
-    connectedCallback() {
-      if (this.#debug()) {
-        console.log("MyFoo.connectedCallback()");
-      }
       const MyFooJsx = () => {
         const _self$ = this;
         const [count, setCount] = createSignal(0);
@@ -1884,10 +1882,12 @@ new EventSource('/esbuild').addEventListener('change', () => location.reload());
           return _el$11;
         })()];
       };
-      const shadow = this.attachShadow({
-        mode: "open"
-      });
-      this.#cleanUp = render(() => createComponent(MyFooJsx, {}), shadow);
+      this.#cleanUp = render(() => createComponent(MyFooJsx, {}), this.shadowRoot);
+    }
+    connectedCallback() {
+      if (this.#debug()) {
+        console.log("MyFoo.connectedCallback()");
+      }
     }
     disconnectedCallback() {
       if (this.#debug()) {
@@ -1955,9 +1955,61 @@ new EventSource('/esbuild').addEventListener('change', () => location.reload());
       throw new Error();
     }
   }
+  defineCustomElementMyFoo("my-foo");
   delegateEvents(["click"]);
 
-  // src/index.ts
-  defineCustomElementMyFoo("my-foo");
+  // src/lib/usercard/UserCard.ts
+  var template2 = document.createElement("template");
+  template2.innerHTML = `
+<link rel="stylesheet" href="userCard/styles.css">
+<div class="user-card">
+    <img />
+    <div class="container">
+        <h3></h3>
+        <div class="info">
+        </div>
+        <button id="open-modal">Show Info</button>
+    </div>
+</div>
+`;
+  var UserCard = class extends HTMLElement {
+    constructor() {
+      super();
+      this.attachShadow({ mode: "open" });
+      this.shadowRoot.appendChild(template2.content.cloneNode(true));
+      this.shadowRoot.innerHTML = ``;
+    }
+    static get observedAttributes() {
+      return ["key"];
+    }
+    connectedCallback() {
+      this.shadowRoot.querySelector("#open-modal").addEventListener("click", () => this.openModal());
+    }
+    /**
+     * This method is called when any attribute to the custom element changes (or an attribute is assigned).
+     *  The method is only called when the attributes defined in the getter observedAttributes() change their value.
+     * @param name 
+     * @param oldValue 
+     * @param newValue 
+     */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    attributeChangedCallback(name, oldValue, newValue) {
+      if (name === "key") {
+        this.shadowRoot.querySelector("h3").innerText = this.getAttribute("name");
+        this.shadowRoot.querySelector("img").src = this.getAttribute("avatar");
+      }
+    }
+    openModal() {
+      const userModal = document.createElement("user-modal");
+      userModal.setAttribute("name", this.getAttribute("name"));
+      userModal.setAttribute("avatar", this.getAttribute("avatar"));
+      userModal.setAttribute("status", this.getAttribute("status"));
+      userModal.setAttribute("species", this.getAttribute("species"));
+      userModal.setAttribute("gender", this.getAttribute("gender"));
+      userModal.setAttribute("key", this.getAttribute("key"));
+      document.getElementsByTagName("body")[0].insertAdjacentElement("afterend", userModal);
+    }
+  };
+  window.customElements.define("user-card", UserCard);
 })();
 //# sourceMappingURL=bundle.js.map

@@ -9,8 +9,30 @@
 </head>
 
 <body>
+    <script type = "module">
+        await fetch(`https://rickandmortyapi.com/api/character?page=${page}`)
+            .then((_) => _.json())
+            .then((_) => {
+                _.results.forEach((user, index) => {
+                    max = _.info.pages;
+                    const nodeToBeInserted = document.createElement("user-card");
+                    nodeToBeInserted.setAttribute("name", user.name);
+                    nodeToBeInserted.setAttribute("avatar", user.image);
+                    nodeToBeInserted.setAttribute("status", user.status);
+                    nodeToBeInserted.setAttribute("species", user.species);
+                    nodeToBeInserted.setAttribute("gender", user.gender);
+                    nodeToBeInserted.setAttribute("key", user.id);
+                    document
+                        .getElementById("details")
+                        .insertAdjacentElement("beforeend", nodeToBeInserted);
+                });
+            });
+        page++;
+    };
+    </script>
     <my-foo id="foo" bar="Hello, World!" ugg></my-foo>
     <my-foo id="bar" bar="Hello, World!" ugg></my-foo>
+    <user-card></user-card>
 </body>
 
 </html>

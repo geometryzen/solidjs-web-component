@@ -1,16 +1,16 @@
-import { defineCustomElementMyFoo } from './lib/my-foo';
 
 export {
-    assertMyFoo,
-    defineCustomElementMyFoo,
-    isMyFoo,
     MyFoo,
     MyFooAttributes,
     MyFooCountEvent,
     MyFooCustomMethods,
-    Observable
-} from './lib/my-foo';
+    Observable,
+    assertMyFoo,
+    defineCustomElementMyFoo,
+    isMyFoo
+} from './lib/my-foo/MyFoo';
 
-defineCustomElementMyFoo("my-foo");
+export { UserCard } from './lib/usercard/UserCard';
+
 
 

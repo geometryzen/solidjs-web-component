@@ -50,6 +50,8 @@ export class MyFoo extends HTMLElement implements MyFooCustomMethods {
      */
     constructor(...params: unknown[]) {
         super();
+        this.attachShadow({ mode: 'open' });    // sets and returns this.shadowRoot
+
         const [bar, setBar] = createSignal<string>('');
         const [ugg, setUgg] = createSignal<boolean>(false);
         this.#bar = bar;
@@ -61,13 +63,9 @@ export class MyFoo extends HTMLElement implements MyFooCustomMethods {
         this.#setDebug = setDebug;
         // eslint-disable-next-line no-console
         console.log("params", JSON.stringify(params));
-    }
 
-    connectedCallback() {
-        if (this.#debug()) {
-            // eslint-disable-next-line no-console
-            console.log("MyFoo.connectedCallback()");
-        }
+        // So long as we are rendering to the shadowRoot, it's OK to do JSX templating in the constructor.
+        // No need to wait for the connected callabck.
         const MyFooJsx = (): JSX.Element => {
             const [count, setCount] = createSignal(0);
 
@@ -93,8 +91,15 @@ export class MyFoo extends HTMLElement implements MyFooCustomMethods {
             );
         };
 
-        const shadow = this.attachShadow({ mode: 'open' });
-        this.#cleanUp = render(() => <MyFooJsx />, shadow);
+        this.#cleanUp = render(() => <MyFooJsx />, this.shadowRoot);
+
+    }
+
+    connectedCallback() {
+        if (this.#debug()) {
+            // eslint-disable-next-line no-console
+            console.log("MyFoo.connectedCallback()");
+        }
 
         // You can also use the Light DOM...
         // this.#cleanUp = render(() => <MyFooJsx />, this)
@@ -185,3 +190,5 @@ export function assertMyFoo(element: HTMLElement | null): HTMLElement & MyFooCus
         throw new Error();
     }
 }
+
+defineCustomElementMyFoo("my-foo");
