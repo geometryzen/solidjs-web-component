@@ -1,3 +1,5 @@
+import { defineCustomElementMyFoo } from './lib/my-foo';
+
 export {
     assertMyFoo,
     defineCustomElementMyFoo,
@@ -8,5 +10,7 @@ export {
     MyFooCustomMethods,
     Observable
 } from './lib/my-foo';
+
+defineCustomElementMyFoo("my-foo");
 
 
